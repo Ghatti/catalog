@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>{{categoryData.name}}</title>
+    </head>
+    <body>
+
+        <header>
+            <h1>{{categoryData.name}}</h1>
+            <section>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul>
+                            {%for message in messages%}
+                                <li>{{message}}</li>
+                            {%endfor%}
+                        </ul>
+                    {%endif%}
+                {%endwith%}
+            </section>
+        </header>
+        <main>
+            <ul>
+            {%for item in items%}
+            <li><a href={{ url_for("showItem", category_id = item.category_id, item_id = item.id) }}>{{item.name}}</a></li>
+
+                {%if item.user_id == userId%}
+                    <p>
+                        <a href={{ url_for("editItem", category_id = item.category_id, item_id = item.id ) }}> Edit Item</a>
+                        <a href={{ url_for("deleteItem", category_id = item.category_id, item_id = item.id ) }}> Delete Item</a>
+                    </p>
+                {%endif%}
+            {%endfor%}
+            </ul>
+        </main>
+    </body>
+</html>

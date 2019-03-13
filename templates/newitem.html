@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <title>Add new item</title>
+    </head>
+    <body>
+        <header>
+            <h1>Add new item</h1>
+        </header>
+        <main>
+            <form action={{ url_for("newItem") }} method="POST"> 
+                <p>
+                    <span>Name:</span>
+                    <input type="text" name="name" placeholder="New Item"/>
+                </p>
+                <p>
+                    <span>Description:</span>
+                    <input type="text" name="description" placeholder="Description"/>
+                </p>
+                <p>
+                    <span>Category:</span>
+                    <select name="category">
+                        {%for category in categories%}
+                        
+                        <option value="{{category.name}}">{{category.name}}</option>
+
+                        {%endfor%}
+                    </select>
+                </p>
+                <input type="submit"value="Add Item"/>
+            </form>
+        </main>
+    </body>
+</html>

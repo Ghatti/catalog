@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>Add new category</title>
+    </head>
+    <body>
+        <h1>Add new category</h1>
+        <main>
+            <form action={{ url_for("newCategory") }}  "/catalog/categories/new/" method="POST"> 
+                
+                <p>
+                    <span>Name:</span>
+                    <input type="text" name="name" placeholder="New Category"/>
+                </p>
+                <input type="submit" value="Add Category"/>
+            </form>
+        </main>
+    </body>
+</html>

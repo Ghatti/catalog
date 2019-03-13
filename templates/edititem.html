@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>Edit item</title>
+    </head>
+    <body>
+        <header>
+            <h1>{{itemData.name}}</h1>
+        </header>
+        <main>
+            <form action={{url_for("editItem", category_id = itemData.category_id, item_id = itemData.id)}} method="POST"> 
+                <p>
+                    <span>Name:</span>
+                    <input type="text" name="name" placeholder="{{itemData.name}}"/>
+                </p>
+                <p>
+                    <span>Description:</span>
+                    <input type="text" name="description" placeholder="New Description"/>
+                </p>
+                <p>
+                    <span>Category:</span>
+                    <select name="category">
+                        <option value=""></option>
+                        {%for category in categories%}
+                        
+                        <option value="{{category.name}}">{{category.name}}</option>
+
+                        {%endfor%}
+                    </select>
+                </p>
+                <input type="submit" value="Edit Item"/>
+            </form>
+        </main>
+
+    </body>
+</html>

@@ -1,0 +1,105 @@
+<html>
+    <head>
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="503094252642-9sjga5hc32c4iiau869inpbcr1s9u043.apps.googleusercontent.com">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+        <title>Catalog App</title>
+    </head>
+    <body>
+        <header>
+            <h1>Catalog App</h1>
+        </header>
+        <Main>
+
+            <section>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul>
+                            {%for message in messages%}
+                                <li>{{message}}</li>
+                            {%endfor%}
+                        </ul>
+                    {%endif%}
+                {%endwith%}
+            </section>
+
+            {%if userId%}
+                <div id="navbarOut">
+                    <a href={{ url_for("newCategory") }}>Add Category</a>
+                    <a href={{ url_for("newItem") }} >Add item</a>
+                    <a href="#" onclick="signOut();"> Logout</a>
+                </div>
+            {%endif%}
+            {%if not userId %}
+                <div class="g-signin2" id="nabvarIn" data-onsuccess="onSignIn" data-theme="dark"></div>
+            {%endif%}
+            
+            <div>
+                <h2>Categories</h2>
+                <ul>
+                    {%if categories%}
+                    {% for category in categories%}
+                        <li><a href={{url_for("showCategory", category_id = category.id )}}>{{category.name}}</a></li>
+                    {%endfor%}
+                    {%endif%}
+                </ul>
+            </div>
+            <div>
+                <h2>Latest items</h2>
+                <ul>
+                    {%if latest%}
+                    {%for item in latest%}
+                        <li><a href={{url_for("showItem", category_id = item.category_id, item_id = item.id)}}>{{item.name}}</a> - {{item.creation_date.date()}}</li>
+                    {%endfor%}
+                    {%endif%}
+                </ul>
+
+            </div>
+        </Main>
+
+        <script>
+
+            function onSignIn(googleUser) {
+              
+                // The ID token you need to pass to your backend:
+                var id_token = googleUser.getAuthResponse().id_token;
+        
+                $.ajax({
+                    type: "POST", 
+                    url: "/gconnect?state={{STATE}}",
+                    processData: false,
+                    data: id_token,
+                    contentType: 'application/octet-stream; charset=utf-8',
+                    success: function(result) {
+                        if (result){
+                            window.location.href = "/catalog";
+                        }
+                        else if (authResult['error']) {
+                            console.log('There was an error:');
+                        } else {
+                            console.log('Failed to make a server-side call. Check your configuration and console.');
+                        }
+                    }
+                })
+
+            }
+
+            function signOut() {
+                
+                $.ajax({
+                    type: "GET",
+                    url: "/gdisconnect",
+                    success: function(result) {
+                        if(result){
+                            window.location.href = "/catalog";
+                        } else {
+                            console.log("Failed to disconnect")
+                        }
+                    }
+                })   
+            }   
+
+        </script>
+    </body>
+</html>
