@@ -1,33 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
 <html>
     <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+            <link rel="stylesheet" href="{{url_for('static', filename='css/main.css') }}">
         <title>{{itemData.name}}</title>
     </head>
-    <body>
+    <body class="container">
 
-        <header>
-            <section>
+        <header class="jumbotron mt-3 text-center">
+
+            <h1>{{itemData.name}}</h1>
+
+            <section class="mt-3">
+
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
                         <ul>
                             {%for message in messages%}
-                                <li>{{message}}</li>
+                                <li><strong class="text-danger">{{message}}</strong></li>
                             {%endfor%}
                         </ul>
                     {%endif%}
                 {%endwith%}
             </section>
         </header>
-        <main>
-            <h1>{{itemData.name}}</h1>
-            <h3>{{categoryData.name}}</h3>
-            <p>{{itemData.description}}</p>
+        <main class="row text-center">
+            <h1 class="col-12">{{itemData.name}}</h1>
+            <h3 class="col-12 mt-3">{{categoryData.name}}</h3>
+            <p class="col-12 mt-3">{{itemData.description}}</p>
 
             {%if itemData.user_id == userId%}
-                <p>
-                    <a href={{ url_for("editItem", category_id = itemData.category_id, item_id = itemData.id ) }}> Edit Item</a>
+                <p class="mx-auto">
+                    <a class="manage-link" href={{ url_for("editItem", category_id = itemData.category_id, item_id = itemData.id ) }}> Edit Item</a>
                 </p>
-                <p>
-                    <a href={{ url_for("deleteItem", category_id = itemData.category_id, item_id = itemData.id ) }}> Delete Item</a>
+                <p class="mx-auto">
+                    <a class="manage-link" href={{ url_for("deleteItem", category_id = itemData.category_id, item_id = itemData.id ) }}> Delete Item</a>
                 </p>
             {% endif %}
         </main>

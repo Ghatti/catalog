@@ -1,4 +1,5 @@
  - Melhor forma de usar session = DBSession()
+ - session.close antes de retornar um valor
  - Melhor forma de verificar se um item existe na base de dados
  - Melhor forma de retornar erros e mensagens de erro - erros de http no geral
  - Melhorar ifs das linhas 156 em diante
@@ -10,3 +11,4 @@
  - more details on oauth
  - logout 
  - autologin
+ - authorize only one type of reuqest, but leave the other open

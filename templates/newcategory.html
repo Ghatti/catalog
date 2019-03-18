@@ -1,17 +1,25 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/main.css') }}">
         <title>Add new category</title>
     </head>
-    <body>
-        <h1>Add new category</h1>
-        <main>
+    <body class="container">
+        <header class="jumbontron mt-3 text-center p-3">
+            <h1>Add new category</h1>
+        </header>
+        <main class="mt-5">
             <form action={{ url_for("newCategory") }}  "/catalog/categories/new/" method="POST"> 
                 
-                <p>
-                    <span>Name:</span>
-                    <input type="text" name="name" placeholder="New Category"/>
-                </p>
-                <input type="submit" value="Add Category"/>
+                <div class="form-group row justify-content-center text-center text-sm-left">
+                    <label class="col-12 col-sm-3" for="name"><strong>Name:</strong></label>
+                    <input type="text" class="form-control col-12 col-sm-6" id="name" name="name" placeholder="New Category"/>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary mx-auto mt-3">Add Category</button>
+                </div>
             </form>
         </main>
     </body>

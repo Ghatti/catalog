@@ -1,0 +1,39 @@
+
+:root{
+    --main-color: #F6FFE0;
+    --secondary-color: #E2F0D6;
+    --tert-color: #10222B;
+    --link-color: #F57336;
+}
+
+
+body {
+    background-color: var(--main-color);
+    font-size: 1.2em; 
+}
+
+.jumbotron, header{
+    background-color: var(--secondary-color);
+    color: var(--tert-color);
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    color: var(--tert-color);
+}
+
+
+
+.manage-link {
+    font-weight: bold;
+    color: var(--link-color);
+}
+
+.link {
+    font-weight: bold;
+}
