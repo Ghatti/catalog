@@ -94,15 +94,6 @@ def get_auth_token():
 
 
 # Google signup endpoints
-@app.route("/login/")
-def showLogin():
-    state = "".join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in range(32))
-    login_session["state"] = state
-
-    return render_template("login.html", STATE=state)
-
-
 @app.route("/gconnect", methods=["POST"])
 def gconnect():
 
@@ -590,8 +581,9 @@ def apiManageItem(item_id):
                 login_session.admin):
             return abort(401, "You cannot edit this item")
 
-        name, desc, category = body.get("name"),
-        body.get("description"), body.get("category")
+        name = body.get("name"),
+        desc = body.get("description")
+        category = body.get("category")
 
         if name:
             if session.query(Item).filter_by(name=name).first():
