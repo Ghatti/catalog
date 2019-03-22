@@ -30,7 +30,7 @@
                     
                 {%endif%}
                 {%if not userId %}
-                    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+                    <div id="g-signin" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
                 {%endif%}                
 
             </nav>
@@ -82,22 +82,24 @@
                 // The ID token you need to pass to your backend:
                 var id_token = googleUser.getAuthResponse().id_token;
         
-                $.ajax({
-                    type: "POST", 
-                    url: "/gconnect?state={{STATE}}",
-                    processData: false,
-                    data: id_token,
-                    contentType: 'application/octet-stream; charset=utf-8',
-                    success: function(result) {
-                        if (result){
-                            window.location.href = "/catalog";
+                $("#g-signin").click(function(){
+                    $.ajax({
+                        type: "POST", 
+                        url: "/gconnect?state={{STATE}}",
+                        processData: false,
+                        data: id_token,
+                        contentType: 'application/octet-stream; charset=utf-8',
+                        success: function(result) {
+                            if (result){
+                                window.location.href = "/catalog";
+                            }
+                            else if (authResult['error']) {
+                                console.log('There was an error:');
+                            } else {
+                                console.log('Failed to make a server-side call. Check your configuration and console.');
+                            }
                         }
-                        else if (authResult['error']) {
-                            console.log('There was an error:');
-                        } else {
-                            console.log('Failed to make a server-side call. Check your configuration and console.');
-                        }
-                    }
+                    })
                 })
 
             }

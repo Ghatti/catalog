@@ -20,7 +20,6 @@ CLIENT_ID = json.loads(open("client_secrets.json", "r")
 
 app = Flask(__name__)
 app.secret_key = "thisisassecretasitgets2%"
-
 engine = create_engine('sqlite:///catalog.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
@@ -139,7 +138,12 @@ def gdisconnect():
         response.headers["Content-Type"] = "application/json"
         return response
 
+    requests.post('https://accounts.google.com/o/oauth2/revoke',
+                  params={'token': login_session["credentials"]},
+                  headers={'content-type': 'application/x-www-form-urlencoded'})
+
     del login_session["userId"]
+    del login_session["credentials"]
 
     return redirect(url_for("showHome"))
 
