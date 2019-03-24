@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="google-signin-scope" content="profile email">
         <meta name="google-signin-client_id" content="503094252642-9sjga5hc32c4iiau869inpbcr1s9u043.apps.googleusercontent.com">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-        <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+        <script src="https://apis.google.com/js/api.js"></script>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="{{url_for('static', filename='css/main.css') }}">
         <title>Catalog App</title>
@@ -25,12 +26,12 @@
                         <a class="nav-link manage-link" href={{ url_for("newItem") }} >Add item</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link manage-link" href="#" onclick="signOut();"> Logout</a>
+                        <a id="signout-button" class="nav-link manage-link" onclick="handleSignOutClick()" href="#"> Logout</a>
                     </div>
                     
                 {%endif%}
                 {%if not userId %}
-                    <div id="g-signin" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+                    <a id="signin-button" class="nav-link manage-link" onclick="handleSignInClick()" href="#">Sign In</a>
                 {%endif%}                
 
             </nav>
@@ -76,13 +77,19 @@
         </Main>
 
         <script>
+            function start() {
 
-            function onSignIn(googleUser) {
-              
-                // The ID token you need to pass to your backend:
-                var id_token = googleUser.getAuthResponse().id_token;
-        
-                $("#g-signin").click(function(){
+                gapi.client.init({
+                    apiKey: 'CVVGPit61G_gl2SAm-LxFVZz',
+                    clientId: '503094252642-9sjga5hc32c4iiau869inpbcr1s9u043.apps.googleusercontent.com',
+                    scope: 'profile'
+                })
+            }
+
+            function handleSignInClick(event) {
+
+                gapi.auth2.getAuthInstance().signIn().then(function(guser){
+                    id_token = guser.getAuthResponse().id_token;
                     $.ajax({
                         type: "POST", 
                         url: "/gconnect?state={{STATE}}",
@@ -99,13 +106,12 @@
                                 console.log('Failed to make a server-side call. Check your configuration and console.');
                             }
                         }
-                    })
+                    });
                 })
-
             }
 
-            function signOut() {
-                
+            function handleSignOutClick(event) {
+                gapi.auth2.getAuthInstance().signOut();
                 $.ajax({
                     type: "GET",
                     url: "/gdisconnect",
@@ -116,9 +122,11 @@
                             console.log("Failed to disconnect")
                         }
                     }
-                })   
-            }   
+                }) 
+            }       
 
+
+            gapi.load('client:auth2', start);
         </script>
     </body>
 </html>

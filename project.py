@@ -104,9 +104,12 @@ def gconnect():
         return response
 
     try:
+        print("hereeee")
+        print(token)
         idinfo = id_token.verify_oauth2_token(token,
                                               grequests.Request(),
                                               CLIENT_ID)
+        print("nothere")
 
         if idinfo['iss'] not in ['accounts.google.com',
                                  'https://accounts.google.com']:
