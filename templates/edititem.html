@@ -14,20 +14,21 @@
             <form action={{url_for("editItem", category_id = itemData.category_id, item_id = itemData.id)}} method="POST"> 
                 <div class="form-group row justify-content-center text-center text-sm-left">
                     <label class="col-12 col-sm-3" for="name"><strong>Name:</strong></label>
-                    <input type="text" class="form-control col-12 col-sm-6" id="name" name="name" placeholder="{{itemData.name}}"/>
+                    <input type="text" class="form-control col-12 col-sm-6" id="name" name="name" value="{{itemData.name}}"/>
                 </div>
                 <div class="form-group row justify-content-center text-center text-sm-left">
                     <label class="col-sm-3" for="description"><strong>Description:</strong></label>
-                    <input type="text" class="form-control col-sm-6" id="description" name="description" placeholder="New Description"/>
+                    <input type="text" class="form-control col-sm-6" id="description" name="description" value="{{itemData.description}}"/>
                 </div>
                 <div class="form-group row justify-content-center text-center text-sm-left">
                     <label class="col-sm-3" for="category"><strong>Category:</strong></label>
                     <select class="form-control col-sm-6" id="category" name="category">
-                        <option value=""></option>
+                        <option value="{{itemCategory}}" selected>{{itemCategory}}</option>
                         {%for category in categories%}
-                        
-                        <option value="{{category.name}}">{{category.name}}</option>
 
+                            {%if category.name != itemCategory%}
+                                <option value="{{category.name}}">{{category.name}}</option>
+                            {%endif%}
                         {%endfor%}
                     </select>
                 </div>

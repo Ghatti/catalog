@@ -61,6 +61,9 @@ def new_user():
 @auth.verify_password
 def verify_password(username_or_token, password):
 
+    if request.method == "GET":
+        return True
+
     session = DBSession()
     user_id = User.verify_auth_token(username_or_token)
 
@@ -103,22 +106,13 @@ def gconnect():
         response.headers["Content-Type"] = "application/json"
         return response
 
-    try:
-        print("hereeee")
-        print(token)
-        idinfo = id_token.verify_oauth2_token(token,
-                                              grequests.Request(),
-                                              CLIENT_ID)
-        print("nothere")
-
-        if idinfo['iss'] not in ['accounts.google.com',
-                                 'https://accounts.google.com']:
-            raise ValueError('Wrong issuer.')
-
-        google_id = idinfo['sub']
-
-    except ValueError:
-        pass
+    idinfo = id_token.verify_oauth2_token(token,
+                                          grequests.Request(),
+                                          CLIENT_ID)
+    if idinfo['iss'] not in ['accounts.google.com',
+                             'https://accounts.google.com']:
+        raise ValueError('Wrong issuer.')
+    google_id = idinfo['sub']
 
     userId = getUserID(idinfo["email"])
 
@@ -165,21 +159,12 @@ def createUser(idinfo):
     return user_id
 
 
-def getUserInfo(user_id):
-    session = DBSession()
-    user = session.query(User).filter_by(id=user_id).one()
-    return user
-    session.close()
-
-
 def getUserID(email):
     session = DBSession()
-    try:
-        user_id = session.query(User).filter_by(email=email).one().id
-        session.close()
-        return user_id
-    except:
-        return None
+
+    user_id = session.query(User).filter_by(email=email).one().id
+    session.close()
+    return user_id
 
 
 # Template endpoint routes
@@ -345,10 +330,12 @@ def editItem(item_id):
     if request.method == "GET":
 
         categories = session.query(Category).all()
+        itemCategory = session.query(Category).filter_by(id=itemData.category_id).first()
         session.close()
         return render_template("edititem.html",
                                categories=categories,
-                               itemData=itemData)
+                               itemData=itemData,
+                               itemCategory=itemCategory.name)
 
     if request.method == "POST":
 
@@ -360,7 +347,7 @@ def editItem(item_id):
             flash("Item not edited")
             return redirect(url_for("showItem", item_id=item_id))
 
-        if session.query(Item).filter_by(name=newName).first():
+        if newName != itemData.name and session.query(Item).filter_by(name=newName).first():
             return abort(400, "This item name has already been used")
 
         if newCat:
@@ -516,6 +503,7 @@ def apiAllItems():
     if request.method == "POST":
 
         body = request.get_json()
+
         if (body.get("name") and body.get("description") and
                 body.get("category")):
 
@@ -579,16 +567,17 @@ def apiManageItem(item_id):
     if request.method == "PUT":
 
         body = request.get_json()
+
         itemData = session.query(Item).filter_by(id=item_id).first()
 
         if not itemData:
             return abort(400, "Item does not exist")
 
-        if (itemData.user_id != login_session.userId and not
-                login_session.admin):
+        if (itemData.user_id != login_session.get("userId") and not
+                login_session.get("admin")):
             return abort(401, "You cannot edit this item")
 
-        name = body.get("name"),
+        name = body.get("name")
         desc = body.get("description")
         category = body.get("category")
 
@@ -596,6 +585,7 @@ def apiManageItem(item_id):
             if session.query(Item).filter_by(name=name).first():
                 return abort(400, "The new item name has already been used")
             itemData.name = name
+
         if desc:
             itemData.description = desc
         if category:
@@ -621,7 +611,7 @@ def apiManageItem(item_id):
         if not item:
             return abort(400, "The requested item does not exist")
 
-        if item.user_id != login_session.userId and not login_session.admin:
+        if item.user_id != login_session.get("userId") and not login_session.get("admin"):
             return abort(401, "You cannot edit this item")
 
         session.delete(item)
