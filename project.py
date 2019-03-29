@@ -109,6 +109,7 @@ def gconnect():
     idinfo = id_token.verify_oauth2_token(token,
                                           grequests.Request(),
                                           CLIENT_ID)
+
     if idinfo['iss'] not in ['accounts.google.com',
                              'https://accounts.google.com']:
         raise ValueError('Wrong issuer.')
@@ -162,9 +163,13 @@ def createUser(idinfo):
 def getUserID(email):
     session = DBSession()
 
-    user_id = session.query(User).filter_by(email=email).one().id
-    session.close()
-    return user_id
+    user = session.query(User).filter_by(email=email).first()
+
+    if user:
+        session.close()
+        return user.id
+    else:
+        return None
 
 
 # Template endpoint routes
