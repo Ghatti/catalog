@@ -439,7 +439,7 @@ def apiAllCategories():
     # from the request's body.
     if request.method == "POST":
 
-        if not login_session.userId:
+        if not login_session.get("userId"):
             return abort(401, """Only registered users
                          can perform this operation""")
 
@@ -458,7 +458,7 @@ def apiAllCategories():
     # Deletes all categories. Also deletes all items as a consequence.
     if request.method == "DELETE":
 
-        if not login_session.admin:
+        if not login_session.get("admin"):
             return abort(401, "Only administrators can perform this operation")
 
         session.query(Category).delete()
@@ -485,7 +485,7 @@ def apiManageCategory(category_id):
 
     if request.method == "DELETE":
 
-        if not login_session.admin:
+        if not login_session.get("admin"):
             return abort(401, "Only administrators can perform this operation")
 
         if not session.query(Category).filter_by(id=category_id).first():
@@ -548,7 +548,7 @@ def apiAllItems():
     # Deletes all items
     if request.method == "DELETE":
 
-        if not login_session.admin:
+        if not login_session.get("admin"):
             return "Only administrators can perform this operation"
 
         session.query(Item).delete()

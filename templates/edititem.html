@@ -1,43 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" href="{{url_for('static', filename='css/main.css') }}">
-        <title>Edit item</title>
-    </head>
-    <body class="container">
-        <header class="jumbontron mt-3 text-center p-3">
-            <h1>{{itemData.name}}</h1>
-        </header>
-        <main class="mt-5">
-            <form action={{url_for("editItem", category_id = itemData.category_id, item_id = itemData.id)}} method="POST"> 
-                <div class="form-group row justify-content-center text-center text-sm-left">
-                    <label class="col-12 col-sm-3" for="name"><strong>Name:</strong></label>
-                    <input type="text" class="form-control col-12 col-sm-6" id="name" name="name" value="{{itemData.name}}"/>
-                </div>
-                <div class="form-group row justify-content-center text-center text-sm-left">
-                    <label class="col-sm-3" for="description"><strong>Description:</strong></label>
-                    <input type="text" class="form-control col-sm-6" id="description" name="description" value="{{itemData.description}}"/>
-                </div>
-                <div class="form-group row justify-content-center text-center text-sm-left">
-                    <label class="col-sm-3" for="category"><strong>Category:</strong></label>
-                    <select class="form-control col-sm-6" id="category" name="category">
-                        <option value="{{itemCategory}}" selected>{{itemCategory}}</option>
-                        {%for category in categories%}
-
-                            {%if category.name != itemCategory%}
-                                <option value="{{category.name}}">{{category.name}}</option>
-                            {%endif%}
-                        {%endfor%}
-                    </select>
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary mx-auto mt-3">Edit Item </button>
-                </div>
-                
-            </form>
-        </main>
-
-    </body>
-</html>
+{% extends "layout.html" %}
+{% block content %}
+    <header class="jumbontron mt-3 text-center p-3">
+        <h1>{{itemData.name}}</h1>
+    </header>
+    <main class="mt-5">
+        <form action={{url_for("editItem", category_id = itemData.category_id, item_id = itemData.id)}} method="POST"> 
+            <div class="form-group row justify-content-center text-center text-sm-left">
+                <label class="col-12 col-sm-3" for="name"><strong>Name:</strong></label>
+                <input type="text" class="form-control col-12 col-sm-6" id="name" name="name" value="{{itemData.name}}"/>
+            </div>
+            <div class="form-group row justify-content-center text-center text-sm-left">
+                <label class="col-sm-3" for="description"><strong>Description:</strong></label>
+                <input type="text" class="form-control col-sm-6" id="description" name="description" value="{{itemData.description}}"/>
+            </div>
+            <div class="form-group row justify-content-center text-center text-sm-left">
+                <label class="col-sm-3" for="category"><strong>Category:</strong></label>
+                <select class="form-control col-sm-6" id="category" name="category">
+                    <option value="{{itemCategory}}" selected>{{itemCategory}}</option>
+                    {%for category in categories%}
+                        {%if category.name != itemCategory%}
+                            <option value="{{category.name}}">{{category.name}}</option>
+                        {%endif%}
+                    {%endfor%}
+                </select>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mx-auto mt-3">Edit Item </button>
+            </div>
+            
+        </form>
+    </main>
+{% endblock %}
