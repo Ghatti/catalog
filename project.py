@@ -136,9 +136,10 @@ def gdisconnect():
         response.headers["Content-Type"] = "application/json"
         return response
 
+    appType = 'application/x-www-form-urlencoded'
     requests.post('https://accounts.google.com/o/oauth2/revoke',
                   params={'token': login_session["credentials"]},
-                  headers={'content-type': 'application/x-www-form-urlencoded'})
+                  headers={'content-type': appType})
 
     del login_session["userId"]
     del login_session["credentials"]
@@ -263,7 +264,8 @@ def newCategory():
         if not request.form["name"]:
             return abort(400, "No category name provided")
 
-        if session.query(Category).filter_by(name=request.form["name"]).first():
+        if session.query(Category).filter_by(
+                name=request.form["name"]).first():
             return abort(400, "Category already exists")
 
         newCategory = Category(name=request.form["name"])
@@ -304,7 +306,8 @@ def showItem(item_id):
     if not itemData:
         return abort(404)
 
-    categoryData = session.query(Category).filter_by(id=itemData.category_id).first()
+    categoryData = session.query(Category).filter_by(
+        id=itemData.category_id).first()
 
     session.close()
     return render_template("item.html",
@@ -335,7 +338,8 @@ def editItem(item_id):
     if request.method == "GET":
 
         categories = session.query(Category).all()
-        itemCategory = session.query(Category).filter_by(id=itemData.category_id).first()
+        itemCategory = session.query(Category).filter_by(
+            id=itemData.category_id).first()
         session.close()
         return render_template("edititem.html",
                                categories=categories,
@@ -352,11 +356,13 @@ def editItem(item_id):
             flash("Item not edited")
             return redirect(url_for("showItem", item_id=item_id))
 
-        if newName != itemData.name and session.query(Item).filter_by(name=newName).first():
+        if newName != itemData.name and session.query(
+                Item).filter_by(name=newName).first():
             return abort(400, "This item name has already been used")
 
         if newCat:
-            newCategory = session.query(Category).filter_by(name=newCat).first()
+            newCategory = session.query(
+                Category).filter_by(name=newCat).first()
 
         if newName:
             itemData.name = newName
@@ -376,7 +382,7 @@ def editItem(item_id):
         flash("Item successfully edited")
         session.close()
         return redirect(url_for("showItem",
-                        category_id=category_id, item_id=item_id))
+                                category_id=category_id, item_id=item_id))
 
 
 # Delete an item. Only usable by the user that created the item or an admin.
@@ -428,7 +434,7 @@ def apiAllCategories():
         categories = session.query(Category).all()
         session.close()
         return jsonify(categories=[category.serialize
-                       for category in categories])
+                                   for category in categories])
     # Add a new category, receiving data in json format
     # from the request's body.
     if request.method == "POST":
@@ -472,7 +478,8 @@ def apiManageCategory(category_id):
         if not session.query(Category).filter_by(id=category_id).first():
             return abort(400, "Category does not exist")
 
-        categoryData = session.query(Item).filter_by(category_id=category_id).all()
+        categoryData = session.query(Item).filter_by(
+            category_id=category_id).all()
         session.close()
         return jsonify([item.serialize for item in categoryData])
 
@@ -518,7 +525,8 @@ def apiAllItems():
             return abort(400, """The name, description and category parameters
                         must be supplied""")
 
-        category = session.query(Category).filter_by(name=body["category"]).first()
+        category = session.query(Category).filter_by(
+            name=body["category"]).first()
 
         if not category:
             return abort(400, "Category does not exist")
@@ -616,7 +624,8 @@ def apiManageItem(item_id):
         if not item:
             return abort(400, "The requested item does not exist")
 
-        if item.user_id != login_session.get("userId") and not login_session.get("admin"):
+        if item.user_id != login_session.get(
+                "userId") and not login_session.get("admin"):
             return abort(401, "You cannot edit this item")
 
         session.delete(item)
